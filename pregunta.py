@@ -22,7 +22,14 @@ def ingest_data():
         ).strip()
         for col in df.columns
     ]
+    df = df.drop([0])
     df = df.ffill()
+    df["cluster"] = df["cluster"].astype(int)
+    df["cantidad_de_palabras_clave"] = df["cantidad_de_palabras_clave"].astype(int)
+    df["porcentaje_de_palabras_clave"] = df["porcentaje_de_palabras_clave"].apply(
+        lambda x: float(x.replace(" %", "").replace(",", "."))
+    )
+
     duplicates_mask = df.duplicated(subset="cluster")
     for index, row in df[duplicates_mask].iterrows():
         original_index = df.index[df["cluster"] == row["cluster"]].tolist()[0]
