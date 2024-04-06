@@ -34,12 +34,12 @@ def ingest_data():
     for index, row in df[duplicates_mask].iterrows():
         original_index = df.index[df["cluster"] == row["cluster"]].tolist()[0]
         df.at[original_index, "principales_palabras_clave"] += (
-            ", " + row["principales_palabras_clave"]
+            " " + row["principales_palabras_clave"]
         )
     df = df.drop_duplicates(subset="cluster")
     df["principales_palabras_clave"] = df["principales_palabras_clave"].apply(
         lambda x: re.sub(
             r"\s+", " ", ", ".join([word.strip() for word in x.split(",") if word])
-        )
+        ).replace(".", "")
     )
     return df
